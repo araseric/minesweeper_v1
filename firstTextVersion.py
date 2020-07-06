@@ -1,22 +1,27 @@
 import random
 import re
+
 class q:
   def __init__(self, voltant, mina, mostrat):
     self.voltant = voltant
     self.mina = mina
     self.mostrat = mostrat
-# Escollim la dificultat, que de moment no és necessari
-# d = input("Dificultat (f)àcil, (m)itjana o (d)ifícil")
-d = "f"
+
+# Escollim la dificultat
+d = input("Dificultat (f)àcil, (m)itjana o (d)ifícil")
+# d = "f"
 if d == "f":
     total = 25
     mines = 5
+    cols = 5
 elif d == "m":
-    total = 64
-    mines = 8
+    total = 49
+    mines = 10
+    cols = 7
 else:
-    total = 100
+    total = 81
     mines = 20
+    cols = 9
 # Afegim mines i espais buits
 llista = []
 for i in range(total - mines):
@@ -29,28 +34,29 @@ random.shuffle(llista) # Desordenem la llista
 
 matriu = []
 comptador = 0
-for i in range(5):
+for i in range(cols):
   matriu.append([])
-  for j in range(5):
+  for j in range(cols):
     matriu[i].append(llista[comptador])
     comptador += 1
 nums = "[0123456789]"
-for i in range(5):
-  for j in range(5):
+cols1 = cols -1
+for i in range(cols):
+  for j in range(cols):
     if matriu[i][j].mina == "x":
       if i == 0 and j == 0:
         matriu[i][j+1].voltant += 1
         matriu[i+1][j].voltant += 1
         matriu[i+1][j+1].voltant += 1
-      elif i == 0 and j == 4:
+      elif i == 0 and j == cols1:
         matriu[i][j-1].voltant += 1
         matriu[i+1][j-1].voltant += 1
         matriu[i+1][j].voltant += 1
-      elif i == 4 and j == 0:
+      elif i == cols1 and j == 0:
         matriu[i-1][j].voltant += 1
         matriu[i-1][j+1].voltant += 1
         matriu[i][j+1].voltant += 1
-      elif i == 4 and j == 4:
+      elif i == cols1 and j == cols1:
         matriu[i-1][j-1].voltant += 1
         matriu[i-1][j].voltant += 1
         matriu[i][j-1].voltant += 1
@@ -66,13 +72,13 @@ for i in range(5):
         matriu[i][j+1].voltant += 1
         matriu[i+1][j].voltant += 1
         matriu[i+1][j+1].voltant += 1
-      elif i > 0 and j == 4:
+      elif i > 0 and j == cols1:
         matriu[i-1][j-1].voltant += 1
         matriu[i-1][j].voltant += 1
         matriu[i][j-1].voltant += 1
         matriu[i+1][j-1].voltant += 1
         matriu[i+1][j].voltant += 1
-      elif i == 4 and j > 0:
+      elif i == cols1 and j > 0:
         matriu[i-1][j-1].voltant += 1
         matriu[i-1][j].voltant += 1
         matriu[i-1][j+1].voltant += 1
@@ -88,9 +94,9 @@ for i in range(5):
         matriu[i+1][j].voltant += 1
         matriu[i+1][j+1].voltant += 1
 
-for i in range(5): # Amb això es mostra el taulell sencer
+for i in range(cols): # Amb això es mostra el taulell sencer
   linia = ""
-  for j in range(5):
+  for j in range(cols):
     if matriu[i][j].mina == "x":
       linia += str(matriu[i][j].mina)
     elif matriu[i][j].voltant == 0:
@@ -103,14 +109,19 @@ for i in range(5): # Amb això es mostra el taulell sencer
 
 tir = ""
 while tir != "exit":
-  print("  12345\n")
-  for i in range(5): # Mostrem taulell amagat
+  columnes = "  "
+  for i in range(cols):
+    columnes += str(i + 1)
+  print(columnes)
+  for i in range(cols): # Mostrem taulell amagat
     linia = chr(97 + i) + " "
-    for j in range(5):
+    for j in range(cols):
       if matriu[i][j].mostrat == False:
         linia += "█"
       elif matriu[i][j].mostrat == True and matriu[i][j].mina == "x":
         linia += str(matriu[i][j].mina)
+      elif matriu[i][j].mostrat == True and matriu[i][j].voltant == 0:
+        linia += "·"
       else:
         linia += str(matriu[i][j].voltant)
     print(linia)
@@ -119,9 +130,9 @@ while tir != "exit":
   colu = int(tir[1]) - 1
   if matriu[fila][colu].mina == "x":
     tir = "exit"
-    for i in range(5): # Amb això es mostra el taulell sencer
+    for i in range(cols): # Amb això es mostra el taulell sencer
       linia = ""
-      for j in range(5):
+      for j in range(cols):
         if matriu[i][j].mina == "x":
           linia += str(matriu[i][j].mina)
         elif matriu[i][j].voltant == 0:
